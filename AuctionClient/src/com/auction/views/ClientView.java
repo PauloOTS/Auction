@@ -7,6 +7,7 @@ package com.auction.views;
 
 import com.auction.client.AuctionClientServant;
 import com.auction.models.Auction;
+import com.auction.models.User;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Vector;
@@ -72,6 +73,7 @@ public class ClientView extends javax.swing.JFrame {
             }
         }
         
+        this.father.setClientInfo(new User(-1, name));
         
         //auctions = this.father.getServer().listAuctions();
         //this.atualizeTable(auctions);
@@ -211,6 +213,7 @@ public class ClientView extends javax.swing.JFrame {
 
     private void itemNewBidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemNewBidActionPerformed
         // TODO add your handling code here:
+        NewBidView v = new NewBidView(this);
     }//GEN-LAST:event_itemNewBidActionPerformed
 
     private void itemAuctionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAuctionsActionPerformed
