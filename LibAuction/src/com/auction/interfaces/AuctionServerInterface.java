@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import com.auction.models.*;
 
 public interface AuctionServerInterface extends Remote{
+	public static String REFERENCE_NAME = "AuctionServer";
 	ArrayList<Auction> listAuctions() throws RemoteException;
 	void initializeAuction(AuctionClientInterface c, Auction a) throws RemoteException;
 	void newBid(AuctionClientInterface c, Bid b) throws RemoteException;
