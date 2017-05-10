@@ -8,6 +8,7 @@ package com.auction.control;
 import com.auction.interfaces.AuctionClientInterface;
 import com.auction.models.Auction;
 import com.auction.models.Bid;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -26,13 +27,16 @@ public class AuctionDB {
 	final private TreeMap<
 		Integer, Auction> auc_by_id;
 	final private AtomicInteger auc_id;
+        final private AtomicInteger client_id;
 
 	public AuctionDB()
 	{
 		auctions = new ArrayList<>();
 		auc_id = new AtomicInteger(0);
+                client_id = new AtomicInteger(0);
 		subscribers = new TreeMap<>();
 		auc_by_id = new TreeMap<>();
+                
 	}
 
 	/**
@@ -55,12 +59,17 @@ public class AuctionDB {
 		s.add(c);
 	}
 
-	public void inicializeAuction(AuctionClientInterface c, Auction a)
+	public void inicializeAuction(AuctionClientInterface c, Auction a) throws RemoteException
 	{
 		a.setId(auc_id.get());
 		auc_by_id.put(auc_id.get(), a);
 		auc_id.addAndGet(1);
-
+                
+                if (a.getAuctioneer().getId() == -1){
+                    c.setID(client_id.get());
+                    client_id.addAndGet(1);
+                }
+                
 		auctions.add(a);
 
 		addSubscriber(c, a);
@@ -73,12 +82,18 @@ public class AuctionDB {
 	 * @return true if the new bid is the new highest bid
 	 * and false otherwise
 	 */
-	public boolean newBid(AuctionClientInterface c, Bid b)
+	public boolean newBid(AuctionClientInterface c, Bid b) throws RemoteException
 	{
 		Auction a = auc_by_id.get(b.getAuction_id());
 		Bid highest = a.getHighest_bid();
 
-		if(b.getValue() <= highest.getValue())
+                if (b.getUser().getId() == -1){
+                    c.setID(client_id.get());
+                    client_id.addAndGet(1);
+                }
+                
+		if(b.getValue() <= highest.getValue() || 
+                  b.getUser().getId() == a.getAuctioneer().getId())
 			return false;
 
 		a.setHighest_bid(b);

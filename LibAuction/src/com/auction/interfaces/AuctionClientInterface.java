@@ -8,4 +8,5 @@ public interface AuctionClientInterface extends Remote{
 	void auctionClosedNotification(Auction a) throws RemoteException;
 	void auctionBidNotification(Bid b) throws RemoteException;
         void errorNotification(String error) throws RemoteException;
+        void setID(int id) throws RemoteException;
 }
