@@ -85,7 +85,7 @@ public class ClientView extends javax.swing.JFrame {
     
     private void atualizeTable(ArrayList<Auction> auctions){
         DefaultTableModel model = (DefaultTableModel) this.tableAuctions.getModel();
-
+        model.setNumRows(0);
         for (Auction a: auctions){
             Object[] temp = new Object[5];
             temp[0] = a.getId();
@@ -99,8 +99,6 @@ public class ClientView extends javax.swing.JFrame {
 
             model.addRow(temp);
         }
-        
-        //model.fireTableDataChanged();
         
         System.out.println(model);
         this.tableAuctions.setModel(model);
