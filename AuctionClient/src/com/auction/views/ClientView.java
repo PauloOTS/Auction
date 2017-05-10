@@ -5,7 +5,15 @@
  */
 package com.auction.views;
 
+import com.auction.client.AuctionClientServant;
+import com.auction.models.Auction;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -16,56 +24,72 @@ public class ClientView extends javax.swing.JFrame {
      /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ClientView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ClientView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ClientView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ClientView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    
+    private ArrayList<Auction> auctions;
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ClientView().setVisible(true);
-            }
-        });
+    public ArrayList<Auction> getAuctions() {
+        return auctions;
     }
+
+    public void setAuctions(ArrayList<Auction> auctions) {
+        this.auctions = auctions;
+    }
+
+    public ArrayList<Auction> getMyAuctions() {
+        return myAuctions;
+    }
+
+    public void setMyAuctions(ArrayList<Auction> myAuctions) {
+        this.myAuctions = myAuctions;
+    }
+    private ArrayList<Auction> myAuctions;
+    private AuctionClientServant father;
     
     /**
      * Creates new form ClientView
      */
-    public ClientView() {
+    
+    public ClientView(AuctionClientServant f) throws RemoteException {
         
+        this.father = f;
         initComponents();
-        String name = null;
-        while(name == null || "".equals(name)){
+        
+        String name = "";
+        while("".equals(name)){
             name = JOptionPane.showInputDialog("What's your name?");
-            if (name == null || "".equals(name)){
+            if(name == null)
+                System.exit(0);
+            if ("".equals(name)){
                 JOptionPane.showMessageDialog(null, "Please, Insert a valid username.");
             }
         }
         
+        
+        //auctions = this.father.getServer().listAuctions();
+        //this.atualizeTable(auctions);
+        
         this.lblUsername.setText("Welcome " + name + " !");
  
     }
-
+    
+    private void atualizeTable(ArrayList<Auction> auctions){
+        DefaultTableModel model = (DefaultTableModel) this.tableAuctions.getModel();
+        for (Auction a: auctions){
+            Object[] temp = new Object[5];
+            temp[0] = a.getId();
+            temp[1] = a.getAuctioneer().getName();
+            temp[2] = a.getProduct().getDesc();
+            temp[3] = a.getHighest_bid().getValue();
+            temp[4] = a.getHighest_bid().getUser().getName();
+            model.addRow(temp);
+        }
+        
+        //model.fireTableDataChanged();
+        
+        System.out.println(model);
+        this.tableAuctions.setModel(model);
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -98,11 +122,11 @@ public class ClientView extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Auction ID", "Auctioneer", "Item", "Actual Value", "Actual Winner", "Time remaining"
+                "Auction ID", "Auctioneer", "Item", "Actual Value", "Actual Winner"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, true, false, false
+                false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -132,6 +156,11 @@ public class ClientView extends javax.swing.JFrame {
         menuView.setText("View");
 
         itemAuctions.setText("Auctions");
+        itemAuctions.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemAuctionsActionPerformed(evt);
+            }
+        });
         menuView.add(itemAuctions);
 
         itemAuctionsInterested.setText("Auctions Interested");
@@ -170,6 +199,16 @@ public class ClientView extends javax.swing.JFrame {
     private void itemNewBidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemNewBidActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_itemNewBidActionPerformed
+
+    private void itemAuctionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAuctionsActionPerformed
+
+        try {
+            this.auctions = this.father.getServer().listAuctions();
+            this.atualizeTable(this.auctions);
+        } catch (RemoteException ex) {
+            Logger.getLogger(ClientView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_itemAuctionsActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
