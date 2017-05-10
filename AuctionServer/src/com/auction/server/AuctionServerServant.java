@@ -13,6 +13,8 @@ import com.auction.models.Auction;
 import com.auction.models.Bid;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -58,6 +60,14 @@ public class	AuctionServerServant
 	public void finishAuction(Auction a) {
 		ArrayList<AuctionClientInterface> l = db.finishAuction(a);
 
-		// notify the clients
+		try {
+			for(AuctionClientInterface c: l){
+				c.auctionBidNotification(a.getHighest_bid());
+			}
+		} catch (RemoteException ex) {
+			Logger.getLogger(
+				AuctionServerServant.class.getName())
+				.log(Level.SEVERE, null, ex);
+		}
 	}
 }
