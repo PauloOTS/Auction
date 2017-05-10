@@ -5,17 +5,29 @@
  */
 package com.auction.views;
 
+import com.auction.models.Auction;
+import com.auction.models.Bid;
+import com.auction.models.Product;
+import com.auction.models.User;
+import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author abacate
  */
-public class newAuctionView extends javax.swing.JFrame {
+public class NewAuctionView extends javax.swing.JFrame {
 
     /**
      * Creates new form newAuctionView
      */
-    public newAuctionView() {
+    
+    private ClientView root;
+    public NewAuctionView(ClientView root) {
+        this.root = root;
         initComponents();
+        this.setVisible(true);
     }
 
     /**
@@ -46,8 +58,18 @@ public class newAuctionView extends javax.swing.JFrame {
         lblMinimum.setText("Minimum Value :");
 
         btnConfirm.setText("Confirm");
+        btnConfirm.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConfirmActionPerformed(evt);
+            }
+        });
 
         btnCancel.setText("Cancel");
+        btnCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelActionPerformed(evt);
+            }
+        });
 
         textMinimum.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -107,40 +129,23 @@ public class newAuctionView extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_textMinimumActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(newAuctionView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(newAuctionView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(newAuctionView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(newAuctionView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_btnCancelActionPerformed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new newAuctionView().setVisible(true);
-            }
-        });
-    }
+    private void btnConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmActionPerformed
+        // TODO add your handling code here:
+        User u = this.root.getFather().getClientInfo();
+        Product p = new Product(-1, this.textItem.getText());
+        Bid b = new Bid(-1, -1, Double.parseDouble(this.textMinimum.getText()), null);
+        Auction a = new Auction(-1, u, p, b, Integer.parseInt(this.textTime.getText()));
+        try {
+            this.root.getFather().getServer().initializeAuction(this.root.getFather(), a);
+        } catch (RemoteException ex) {
+            Logger.getLogger(NewAuctionView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnConfirmActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;

@@ -1,6 +1,8 @@
 package com.auction.models;
 
-public class Product {
+import java.io.Serializable;
+
+public class Product implements Serializable{
 
 	private int id;
 	private String desc;
@@ -9,7 +11,7 @@ public class Product {
 	 * @param id Id of the product
 	 * @param desc Description of the product
 	 */
-	Product(int id, String desc){
+	public Product(int id, String desc){
 		this.id = id;
 		this.desc = desc;
 	}

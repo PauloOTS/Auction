@@ -1,6 +1,8 @@
 package com.auction.models;
 
-public class Auction {
+import java.io.Serializable;
+
+public class Auction implements Serializable{
 
 	private int id;
 	private User auctioneer;
@@ -17,7 +19,7 @@ public class Auction {
 	 * @param duration Duration of the auction 
 	 **/
 	
-	Auction(int id, 
+	public Auction(int id, 
 			User auctioneer, 
 			Product product, 
 			Bid highest_bid, 

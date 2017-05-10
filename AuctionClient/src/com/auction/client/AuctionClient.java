@@ -5,7 +5,11 @@
  */
 package com.auction.client;
 
+import com.auction.interfaces.AuctionServerInterface;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 
 /**
  *
@@ -19,7 +23,13 @@ public class AuctionClient {
      * @throws java.rmi.RemoteException 
      */
     
-    public static void main (String[] args) throws RemoteException{
-        AuctionClientServant c = new AuctionClientServant();
+    public static void main (String[] args) throws RemoteException, NotBoundException{
+        
+        Registry registryRef = LocateRegistry.getRegistry();
+        
+        AuctionServerInterface server = (AuctionServerInterface)
+                registryRef.lookup(AuctionServerInterface.REFERENCE_NAME);
+        
+        AuctionClientServant c = new AuctionClientServant(server);
     }
 }

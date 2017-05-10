@@ -1,6 +1,8 @@
 package com.auction.models;
 
-public class Bid {
+import java.io.Serializable;
+
+public class Bid implements Serializable{
 
 	private int id;
 	private int auction_id;
@@ -15,7 +17,7 @@ public class Bid {
 	 * @param user User related the bid
 	 */
 	
-	Bid(int id, int auction_id, double value, User user){
+	public Bid(int id, int auction_id, double value, User user){
 		this.id = id;
 		this.auction_id = auction_id;
 		this.value = value;

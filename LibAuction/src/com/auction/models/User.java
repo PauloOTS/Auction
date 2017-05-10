@@ -1,6 +1,8 @@
 package com.auction.models;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable{
 
 	private int id;
 	private String name;
@@ -11,7 +13,7 @@ public class User {
 	 * @param name Name of the User
 	 */
 	
-	User(int id, String name){
+	public User(int id, String name){
 		this.setId(id);
 		this.setName(name);
 	}

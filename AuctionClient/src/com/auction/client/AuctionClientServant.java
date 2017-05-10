@@ -9,6 +9,7 @@ import com.auction.interfaces.AuctionClientInterface;
 import com.auction.interfaces.AuctionServerInterface;
 import com.auction.models.Auction;
 import com.auction.models.Bid;
+import com.auction.models.User;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import com.auction.views.ClientView;
@@ -22,6 +23,15 @@ public class AuctionClientServant extends UnicastRemoteObject implements Auction
 
     private ClientView view;
     private AuctionServerInterface server;
+    private User clientInfo;
+
+    public User getClientInfo() {
+        return clientInfo;
+    }
+
+    public void setClientInfo(User clientInfo) {
+        this.clientInfo = clientInfo;
+    }
 
     public ClientView getView() {
         return view;
@@ -39,9 +49,10 @@ public class AuctionClientServant extends UnicastRemoteObject implements Auction
         this.server = server;
     }
     
-    AuctionClientServant() throws RemoteException{
+    AuctionClientServant(AuctionServerInterface server) throws RemoteException{
         this.view = new ClientView(this);
         this.view.setVisible(true);
+        this.server = server;
     }
     
     @Override

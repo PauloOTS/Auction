@@ -44,6 +44,14 @@ public class ClientView extends javax.swing.JFrame {
     }
     private ArrayList<Auction> myAuctions;
     private AuctionClientServant father;
+
+    public AuctionClientServant getFather() {
+        return father;
+    }
+
+    public void setFather(AuctionClientServant father) {
+        this.father = father;
+    }
     
     /**
      * Creates new form ClientView
@@ -138,6 +146,11 @@ public class ClientView extends javax.swing.JFrame {
         menuAuction.setText("Auction");
 
         itemNewAuction.setText("New Auction");
+        itemNewAuction.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemNewAuctionActionPerformed(evt);
+            }
+        });
         menuAuction.add(itemNewAuction);
 
         itemNewBid.setText("New Bid");
@@ -209,6 +222,11 @@ public class ClientView extends javax.swing.JFrame {
             Logger.getLogger(ClientView.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_itemAuctionsActionPerformed
+
+    private void itemNewAuctionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemNewAuctionActionPerformed
+        // TODO add your handling code here:
+        NewAuctionView v = new NewAuctionView(this);
+    }//GEN-LAST:event_itemNewAuctionActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
