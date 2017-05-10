@@ -145,6 +145,7 @@ public class NewAuctionView extends javax.swing.JFrame {
         } catch (RemoteException ex) {
             Logger.getLogger(NewAuctionView.class.getName()).log(Level.SEVERE, null, ex);
         }
+        this.dispose();
     }//GEN-LAST:event_btnConfirmActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

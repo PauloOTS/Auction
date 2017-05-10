@@ -131,6 +131,8 @@ public class NewBidView extends javax.swing.JFrame {
         } catch (RemoteException ex) {
             Logger.getLogger(NewBidView.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        this.dispose();
     }//GEN-LAST:event_btnConfirmActionPerformed
 
 
