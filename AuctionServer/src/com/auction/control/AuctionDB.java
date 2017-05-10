@@ -9,7 +9,8 @@ import com.auction.interfaces.AuctionClientInterface;
 import com.auction.models.Auction;
 import com.auction.models.Bid;
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /** This class implements all the manipulations of the models on the server.
  * The implementation of this class aims to abstract the data manipulation
@@ -19,11 +20,19 @@ import java.util.Map;
  */
 public class AuctionDB {
 	final private ArrayList<Auction> auctions;
-	private Map<Auction, ArrayList<AuctionClientInterface>> subscribers;
+	final private TreeMap<
+		Auction, ArrayList<AuctionClientInterface>> subscribers;
+
+	final private TreeMap<
+		Integer, Auction> auc_by_id;
+	final private AtomicInteger auc_id;
 
 	public AuctionDB()
 	{
 		auctions = new ArrayList<>();
+		auc_id = new AtomicInteger(0);
+		subscribers = new TreeMap<>();
+		auc_by_id = new TreeMap<>();
 	}
 
 	/**
@@ -48,7 +57,10 @@ public class AuctionDB {
 
 	public void inicializeAuction(AuctionClientInterface c, Auction a)
 	{
-		a.setId(auctions.size());
+		a.setId(auc_id.get());
+		auc_by_id.put(auc_id.get(), a);
+		auc_id.addAndGet(1);
+
 		auctions.add(a);
 
 		addSubscriber(c, a);
@@ -63,7 +75,7 @@ public class AuctionDB {
 	 */
 	public boolean newBid(AuctionClientInterface c, Bid b)
 	{
-		Auction a = auctions.get(b.getAuction_id());
+		Auction a = auc_by_id.get(b.getAuction_id());
 		Bid highest = a.getHighest_bid();
 
 		if(b.getValue() <= highest.getValue())
