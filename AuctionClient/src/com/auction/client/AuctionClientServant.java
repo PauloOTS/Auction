@@ -71,4 +71,9 @@ public class AuctionClientServant extends UnicastRemoteObject implements Auction
     public void errorNotification(String error) throws RemoteException {
         JOptionPane.showMessageDialog(null, "Error: " + error);    
     }
+
+    @Override
+    public void setID(int id) throws RemoteException {
+        this.clientInfo.setId(id);
+    }
 }

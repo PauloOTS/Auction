@@ -168,6 +168,11 @@ public class ClientView extends javax.swing.JFrame {
         menuAuction.add(itemNewBid);
 
         itemEndAuction.setText("End Auction");
+        itemEndAuction.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemEndAuctionActionPerformed(evt);
+            }
+        });
         menuAuction.add(itemEndAuction);
 
         menuBar.add(menuAuction);
@@ -234,6 +239,34 @@ public class ClientView extends javax.swing.JFrame {
         // TODO add your handling code here:
         NewAuctionView v = new NewAuctionView(this);
     }//GEN-LAST:event_itemNewAuctionActionPerformed
+
+    private void itemEndAuctionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemEndAuctionActionPerformed
+        // TODO add your handling code here:
+        int id = Integer.parseInt(JOptionPane.showInputDialog("What's the auction id?"));
+        try {
+            this.auctions = this.father.getServer().listAuctions();
+        } catch (RemoteException ex) {
+            Logger.getLogger(ClientView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        Auction aux = null;
+        for (Auction a: auctions) {
+            if (a.getId() == id){
+                aux = a;
+                break;
+            }
+        }
+        
+        if(aux == null){
+            JOptionPane.showMessageDialog(null, "No matching auction found!");
+            return;
+        }
+        
+        try {
+            this.father.getServer().finishAuction(aux);
+        } catch (RemoteException ex) {
+            Logger.getLogger(ClientView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_itemEndAuctionActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
