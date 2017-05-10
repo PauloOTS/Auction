@@ -38,6 +38,7 @@ public class	AuctionServerServant
 	public ArrayList<Auction> listAuctions()
 	throws RemoteException
 	{
+		System.out.println("listAuctions");
 		return db.getAuctions();
 	}
 
@@ -45,6 +46,7 @@ public class	AuctionServerServant
 	public void initializeAuction(AuctionClientInterface c, Auction a)
 	throws RemoteException
 	{
+		System.out.println("initializeAuction");
 		db.inicializeAuction(c, a);
 	}
 
@@ -52,12 +54,15 @@ public class	AuctionServerServant
 	public synchronized void newBid(AuctionClientInterface c, Bid b)
 	throws RemoteException
 	{
+		System.out.println("newBid");
 		// if ...
 		db.newBid(c, b);
 	}
 
 	@Override
-	public void finishAuction(Auction a) {
+	public void finishAuction(Auction a)
+	{
+		System.out.println("finishAuction");
 		ArrayList<AuctionClientInterface> l = db.finishAuction(a);
 
 		try {

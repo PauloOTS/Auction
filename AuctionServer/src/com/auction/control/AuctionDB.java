@@ -81,7 +81,7 @@ public class AuctionDB {
 		if(b.getValue() <= highest.getValue())
 			return false;
 
-		a.setHighest_bid(highest);
+		a.setHighest_bid(b);
 		addSubscriber(c, a);
 		return true;
 	}
