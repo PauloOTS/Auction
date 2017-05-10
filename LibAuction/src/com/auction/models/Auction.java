@@ -2,7 +2,7 @@ package com.auction.models;
 
 import java.io.Serializable;
 
-public class Auction implements Serializable{
+public class Auction implements Comparable, Serializable{
 
 	private int id;
 	private User auctioneer;
@@ -64,5 +64,17 @@ public class Auction implements Serializable{
 	public void setDuration_sec(int duration_sec) {
 		this.duration_sec = duration_sec;
 	}	
+
+	@Override
+	public int compareTo(Object t) {
+		Auction a = (Auction) t;
+		int r = 0;
+		if(this.id < a.getId())
+			r = -1;
+		else if(this.id > a.getId())
+			r = 1;
+
+		return r;
+	}
 
 }

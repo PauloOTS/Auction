@@ -10,7 +10,6 @@ import com.auction.models.Auction;
 import com.auction.models.User;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -56,6 +55,8 @@ public class ClientView extends javax.swing.JFrame {
     
     /**
      * Creates new form ClientView
+     * @param f
+     * @throws java.rmi.RemoteException
      */
     
     public ClientView(AuctionClientServant f) throws RemoteException {
@@ -75,8 +76,8 @@ public class ClientView extends javax.swing.JFrame {
         
         this.father.setClientInfo(new User(-1, name));
         
-        //auctions = this.father.getServer().listAuctions();
-        //this.atualizeTable(auctions);
+        auctions = this.father.getServer().listAuctions();
+        this.atualizeTable(auctions);
         
         this.lblUsername.setText("Welcome " + name + " !");
  
@@ -84,13 +85,18 @@ public class ClientView extends javax.swing.JFrame {
     
     private void atualizeTable(ArrayList<Auction> auctions){
         DefaultTableModel model = (DefaultTableModel) this.tableAuctions.getModel();
+
         for (Auction a: auctions){
             Object[] temp = new Object[5];
             temp[0] = a.getId();
             temp[1] = a.getAuctioneer().getName();
             temp[2] = a.getProduct().getDesc();
             temp[3] = a.getHighest_bid().getValue();
-            temp[4] = a.getHighest_bid().getUser().getName();
+	    if(a.getHighest_bid().getUser() != null)
+	    	temp[4] = a.getHighest_bid().getUser().getName();
+	    else
+		temp[4] = "No Bid";
+
             model.addRow(temp);
         }
         

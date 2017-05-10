@@ -21,8 +21,8 @@ import javax.swing.JOptionPane;
  */
 public class AuctionClientServant extends UnicastRemoteObject implements AuctionClientInterface{
 
-    private ClientView view;
-    private AuctionServerInterface server;
+    final private ClientView view;
+    final private AuctionServerInterface server;
     private User clientInfo;
 
     public User getClientInfo() {
@@ -37,22 +37,14 @@ public class AuctionClientServant extends UnicastRemoteObject implements Auction
         return view;
     }
 
-    public void setView(ClientView view) {
-        this.view = view;
-    }
-
     public AuctionServerInterface getServer() {
         return server;
     }
 
-    public void setServer(AuctionServerInterface server) {
-        this.server = server;
-    }
-    
     AuctionClientServant(AuctionServerInterface server) throws RemoteException{
+        this.server = server;
         this.view = new ClientView(this);
         this.view.setVisible(true);
-        this.server = server;
     }
     
     @Override

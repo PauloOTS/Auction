@@ -6,10 +6,12 @@
 package com.auction.client;
 
 import com.auction.interfaces.AuctionServerInterface;
+import com.auction.models.Auction;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.ArrayList;
 
 /**
  *
@@ -29,7 +31,7 @@ public class AuctionClient {
         
         AuctionServerInterface server = (AuctionServerInterface)
                 registryRef.lookup(AuctionServerInterface.REFERENCE_NAME);
-        
+
         AuctionClientServant c = new AuctionClientServant(server);
     }
 }
