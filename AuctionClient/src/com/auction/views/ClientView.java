@@ -95,7 +95,7 @@ public class ClientView extends javax.swing.JFrame {
         this.lblUsername.setText("Welcome " + name + " !");
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment( JLabel.CENTER );
-        tableAuctions.setDefaultRenderer(Object.class, centerRenderer);
+        tableAuctions.setDefaultRenderer(Object.class , centerRenderer);
  
     }
     

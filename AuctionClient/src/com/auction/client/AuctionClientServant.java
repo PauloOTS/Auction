@@ -93,14 +93,19 @@ public class AuctionClientServant extends UnicastRemoteObject implements Auction
 		    String dialog_msg =	"Error in auction: \n" + 
 			    	    	ex.getAuction().toString() +
 			    		ex.getMessage();
-                    JOptionPane.showMessageDialog(this.getView(), dialog_msg);    
+                    this.errorNotification(dialog_msg);    
 
 	    }
     }
 
     @Override
     public void errorNotification(String error) throws RemoteException {
-        JOptionPane.showMessageDialog(this.getView(), "Error: " + error);    
+        
+        Thread t = new Thread(() -> {
+            JOptionPane.showMessageDialog(this.getView(), "Error: " + error);    
+        });
+        t.start();
+            
     }
 
     @Override
