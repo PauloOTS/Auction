@@ -9,11 +9,15 @@ import com.auction.client.AuctionClientServant;
 import com.auction.exceptions.AuctionException;
 import com.auction.models.Auction;
 import com.auction.models.User;
+import java.awt.Point;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -34,6 +38,7 @@ public class ClientView extends javax.swing.JFrame {
 
     public void setAuctions(ArrayList<Auction> auctions) {
         this.auctions = auctions;
+        this.atualizeTable(this.auctions);
     }
 
     public ArrayList<Auction> getMyAuctions() {
@@ -88,6 +93,9 @@ public class ClientView extends javax.swing.JFrame {
         this.atualizeTable(auctions);
         
         this.lblUsername.setText("Welcome " + name + " !");
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment( JLabel.CENTER );
+        tableAuctions.setDefaultRenderer(Object.class, centerRenderer);
  
     }
     
@@ -153,6 +161,12 @@ public class ClientView extends javax.swing.JFrame {
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
+            }
+        });
+        tableAuctions.setAutoscrolls(false);
+        tableAuctions.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableAuctionsMouseClicked(evt);
             }
         });
         jScrollPane1.setViewportView(tableAuctions);
@@ -254,7 +268,11 @@ public class ClientView extends javax.swing.JFrame {
 
     private void itemEndAuctionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemEndAuctionActionPerformed
         // TODO add your handling code here:
-        int id = Integer.parseInt(JOptionPane.showInputDialog("What's the auction id?"));
+        String s = JOptionPane.showInputDialog("What's the auction id?");
+        if (s == null)
+            return;
+        
+        int id = Integer.parseInt(s);
         try {
             this.auctions = this.father.getServer().listAuctions();
         } catch (RemoteException ex) {
@@ -287,6 +305,19 @@ public class ClientView extends javax.swing.JFrame {
 			    		ex.getMessage();
         }
     }//GEN-LAST:event_itemEndAuctionActionPerformed
+
+    private void tableAuctionsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableAuctionsMouseClicked
+        // TODO add your handling code here:
+        JTable table =(JTable) evt.getSource();
+        Point p = evt.getPoint();
+        int row = table.rowAtPoint(p);
+        if (evt.getClickCount() == 2) {
+            int id = (int) tableAuctions.getValueAt(row, 0);
+            NewBidView v = new NewBidView(this);
+            v.setTextAuctionID(Integer.toString(id));
+            
+        }
+    }//GEN-LAST:event_tableAuctionsMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -52,11 +52,16 @@ public class AuctionClientServant extends UnicastRemoteObject implements Auction
     
     @Override
     public void auctionClosedNotification(Auction a) throws RemoteException {
-        JOptionPane.showMessageDialog(null, "Auction " + 
-                                      a.getId() + "closed.\n\nWinner is: " + 
-                                      a.getHighest_bid().getUser()
-                                      + "\n\nWinner Value: "+ 
-                                      a.getHighest_bid().getValue());
+        
+        Thread t = new Thread(() -> {
+            JOptionPane.showMessageDialog(null, "Auction " +
+                    a.getId() + "closed.\n\nWinner is: " +
+                    a.getHighest_bid().getUser().getName()
+                    + "\n\nWinner Value: "+
+                    a.getHighest_bid().getValue());
+        });
+        t.start();
+
         
 	    try {
 		    this.view.setAuctions(this.server.listAuctions());
@@ -70,23 +75,31 @@ public class AuctionClientServant extends UnicastRemoteObject implements Auction
 
     @Override
     public void auctionBidNotification(Bid b) throws RemoteException {
-        JOptionPane.showMessageDialog(null, "New bid at Auction " + 
+        
+        Thread t = new Thread(() -> {
+            JOptionPane.showMessageDialog(this.getView(), "New bid at Auction " + 
                                       b.getAuction_id() + "\n\nUser is: " 
-                                      + b.getUser()
+                                      + b.getUser().getName()
                                       + "\n\nValue is: "+ b.getValue());
+        });
+        t.start();
+        
 	    try {
 		    this.view.setAuctions(this.server.listAuctions());
 	    } catch (AuctionException ex) {
+                    System.out.println("asidfohsaifhadosifuhdsifu\n\n");
 		    Logger.getLogger(AuctionClientServant.class.getName()).log(Level.SEVERE, null, ex);
 		    String dialog_msg =	"Error in auction: \n" + 
 			    	    	ex.getAuction().toString() +
 			    		ex.getMessage();
+                    JOptionPane.showMessageDialog(this.getView(), dialog_msg);    
+
 	    }
     }
 
     @Override
     public void errorNotification(String error) throws RemoteException {
-        JOptionPane.showMessageDialog(null, "Error: " + error);    
+        JOptionPane.showMessageDialog(this.getView(), "Error: " + error);    
     }
 
     @Override

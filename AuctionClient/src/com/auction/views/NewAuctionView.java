@@ -143,6 +143,7 @@ public class NewAuctionView extends javax.swing.JFrame {
         Auction a = new Auction(-1, u, p, b, Integer.parseInt(this.textTime.getText()));
         try {
             this.root.getFather().getServer().initializeAuction(this.root.getFather(), a);
+            this.root.setAuctions(this.root.getFather().getServer().listAuctions());
         } catch (RemoteException ex) {
             Logger.getLogger(NewAuctionView.class.getName()).log(Level.SEVERE, null, ex);
         }   catch (AuctionException ex) {

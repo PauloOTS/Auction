@@ -10,6 +10,7 @@ import com.auction.models.Bid;
 import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JTextField;
 
 /**
  *
@@ -149,4 +150,8 @@ public class NewBidView extends javax.swing.JFrame {
     private javax.swing.JTextField textAuctionID;
     private javax.swing.JTextField textBid;
     // End of variables declaration//GEN-END:variables
+
+    public void setTextAuctionID(String textAuctionID) {
+        this.textAuctionID.setText(textAuctionID);
+    }
 }
