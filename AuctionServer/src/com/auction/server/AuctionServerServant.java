@@ -57,6 +57,8 @@ public class	AuctionServerServant
 				a);
 		}
 
+		db.inicializeAuction(c, a);
+
 	}
 
 	@Override

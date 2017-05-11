@@ -52,7 +52,7 @@ public class AuctionClientServant extends UnicastRemoteObject implements Auction
     
     @Override
     public void auctionClosedNotification(Auction a) throws RemoteException {
-        
+
         Thread t = new Thread(() -> {
             JOptionPane.showMessageDialog(null, "Auction " +
                     a.getId() + "closed.\n\nWinner is: " +
@@ -60,6 +60,7 @@ public class AuctionClientServant extends UnicastRemoteObject implements Auction
                     + "\n\nWinner Value: "+
                     a.getHighest_bid().getValue());
         });
+
         t.start();
 
         
