@@ -57,7 +57,6 @@ public class	AuctionServerServant
 				a);
 		}
 
-		db.inicializeAuction(c, a);
 	}
 
 	@Override
@@ -68,7 +67,13 @@ public class	AuctionServerServant
 		System.out.println("newBid");
 		db.newBid(c, b);
 
-		c.auctionBidNotification(b);
+		ArrayList<AuctionClientInterface> l = db.getSubscribers(
+					db.getAuction(b.getAuction_id()));
+
+		if(l != null){
+			for(AuctionClientInterface cref : l)
+				cref.auctionBidNotification(b);
+		}
 	}
 
 	@Override

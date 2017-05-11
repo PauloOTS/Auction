@@ -121,17 +121,28 @@ public class AuctionDB {
 
 	}
 
+	public Auction getAuction(int id)
+	{
+		return auc_by_id.get(id);
+	}
+
+	public ArrayList<AuctionClientInterface> getSubscribers(Auction a)
+	{
+		return subscribers.get(a);
+	}
+
 	public ArrayList<AuctionClientInterface> finishAuction(Auction a)
 		throws AuctionException
 	{
 		ArrayList<AuctionClientInterface> l = subscribers.get(a);
 
-		if(l != null)
+		if(l != null){
 			subscribers.remove(a);
-		else
+		}else{
 			throw new AuctionException(
 				"The auction doest not exists or " +
 				"it's already over!", a);
+		}
 
 		return l;
 	}
