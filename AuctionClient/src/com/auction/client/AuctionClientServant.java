@@ -83,6 +83,7 @@ public class AuctionClientServant extends UnicastRemoteObject implements Auction
                                       + b.getUser().getName()
                                       + "\n\nValue is: "+ b.getValue());
         });
+
         t.start();
         
 	    try {
