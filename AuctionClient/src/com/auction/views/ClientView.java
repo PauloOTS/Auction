@@ -252,12 +252,12 @@ public class ClientView extends javax.swing.JFrame {
         try {
             this.auctions = this.father.getServer().listAuctions();
             this.atualizeTable(this.auctions);
-        } catch (RemoteException ex) {
-            Logger.getLogger(ClientView.class.getName()).log(Level.SEVERE, null, ex);
-        }   catch (AuctionException ex) {
+        }catch (AuctionException ex) {
 		    String dialog_msg =	"Error in auction: \n" + 
 			    	    	ex.getAuction().toString() +
 			    		ex.getMessage();
+        } catch (RemoteException ex) {
+            Logger.getLogger(ClientView.class.getName()).log(Level.SEVERE, null, ex);
 	}
     }//GEN-LAST:event_itemAuctionsActionPerformed
 
@@ -275,13 +275,14 @@ public class ClientView extends javax.swing.JFrame {
         int id = Integer.parseInt(s);
         try {
             this.auctions = this.father.getServer().listAuctions();
-        } catch (RemoteException ex) {
-            Logger.getLogger(ClientView.class.getName()).log(Level.SEVERE, null, ex);
-        }   catch (AuctionException ex) {
+        }catch (AuctionException ex) {
 		    String dialog_msg =	"Error in auction: \n" + 
 			    	    	ex.getAuction().toString() +
 			    		ex.getMessage();
-    	}
+    	}catch (RemoteException ex) {
+            Logger.getLogger(ClientView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         Auction aux = null;
         for (Auction a: auctions) {
             if (a.getId() == id){
@@ -297,12 +298,12 @@ public class ClientView extends javax.swing.JFrame {
         
         try {
             this.father.getServer().finishAuction(aux);
-        } catch (RemoteException ex) {
-            Logger.getLogger(ClientView.class.getName()).log(Level.SEVERE, null, ex);
-        }   catch (AuctionException ex) {
+        } catch (AuctionException ex) {
 		    String dialog_msg =	"Error in auction: \n" + 
 			    	    	ex.getAuction().toString() +
 			    		ex.getMessage();
+        } catch (RemoteException ex) {
+            Logger.getLogger(ClientView.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_itemEndAuctionActionPerformed
 
