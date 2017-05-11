@@ -89,6 +89,7 @@ public class ClientView extends javax.swing.JFrame {
 		    String dialog_msg =	"Error in auction: \n" + 
 			    	    	ex.getAuction().toString() +
 			    		ex.getMessage();
+                    this.father.errorNotification(dialog_msg);
 	    }
         this.atualizeTable(auctions);
         
@@ -258,6 +259,7 @@ public class ClientView extends javax.swing.JFrame {
 		    String dialog_msg =	"Error in auction: \n" + 
 			    	    	ex.getAuction().toString() +
 			    		ex.getMessage();
+                    this.father.errorNotification(dialog_msg);
 	}
     }//GEN-LAST:event_itemAuctionsActionPerformed
 
@@ -281,6 +283,7 @@ public class ClientView extends javax.swing.JFrame {
 		    String dialog_msg =	"Error in auction: \n" + 
 			    	    	ex.getAuction().toString() +
 			    		ex.getMessage();
+                    this.father.errorNotification(dialog_msg);
     	}
         Auction aux = null;
         for (Auction a: auctions) {
@@ -303,6 +306,7 @@ public class ClientView extends javax.swing.JFrame {
 		    String dialog_msg =	"Error in auction: \n" + 
 			    	    	ex.getAuction().toString() +
 			    		ex.getMessage();
+                    this.father.errorNotification(dialog_msg);
         }
     }//GEN-LAST:event_itemEndAuctionActionPerformed
 
