@@ -66,6 +66,14 @@ public class Auction implements Comparable, Serializable{
 	}	
 
 	@Override
+	public String toString()
+	{
+		return	"id: " + getId() + "\n" +
+			"auctionner_id: " + getAuctioneer().getId() + "\n" +
+			"duration: " + getDuration_sec() + "\n";
+	}
+
+	@Override
 	public int compareTo(Object t) {
 		Auction a = (Auction) t;
 		int r = 0;

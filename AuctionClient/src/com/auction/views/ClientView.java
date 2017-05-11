@@ -6,6 +6,7 @@
 package com.auction.views;
 
 import com.auction.client.AuctionClientServant;
+import com.auction.exceptions.AuctionException;
 import com.auction.models.Auction;
 import com.auction.models.User;
 import java.rmi.RemoteException;
@@ -76,7 +77,14 @@ public class ClientView extends javax.swing.JFrame {
         
         this.father.setClientInfo(new User(-1, name));
         
-        auctions = this.father.getServer().listAuctions();
+	    try {
+		    auctions = this.father.getServer().listAuctions();
+	    } catch (AuctionException ex) {
+		    Logger.getLogger(ClientView.class.getName()).log(Level.SEVERE, null, ex);
+		    String dialog_msg =	"Error in auction: \n" + 
+			    	    	ex.getAuction().toString() +
+			    		ex.getMessage();
+	    }
         this.atualizeTable(auctions);
         
         this.lblUsername.setText("Welcome " + name + " !");
@@ -232,7 +240,11 @@ public class ClientView extends javax.swing.JFrame {
             this.atualizeTable(this.auctions);
         } catch (RemoteException ex) {
             Logger.getLogger(ClientView.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }   catch (AuctionException ex) {
+		    String dialog_msg =	"Error in auction: \n" + 
+			    	    	ex.getAuction().toString() +
+			    		ex.getMessage();
+	}
     }//GEN-LAST:event_itemAuctionsActionPerformed
 
     private void itemNewAuctionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemNewAuctionActionPerformed
@@ -247,7 +259,11 @@ public class ClientView extends javax.swing.JFrame {
             this.auctions = this.father.getServer().listAuctions();
         } catch (RemoteException ex) {
             Logger.getLogger(ClientView.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }   catch (AuctionException ex) {
+		    String dialog_msg =	"Error in auction: \n" + 
+			    	    	ex.getAuction().toString() +
+			    		ex.getMessage();
+    	}
         Auction aux = null;
         for (Auction a: auctions) {
             if (a.getId() == id){
@@ -265,6 +281,10 @@ public class ClientView extends javax.swing.JFrame {
             this.father.getServer().finishAuction(aux);
         } catch (RemoteException ex) {
             Logger.getLogger(ClientView.class.getName()).log(Level.SEVERE, null, ex);
+        }   catch (AuctionException ex) {
+		    String dialog_msg =	"Error in auction: \n" + 
+			    	    	ex.getAuction().toString() +
+			    		ex.getMessage();
         }
     }//GEN-LAST:event_itemEndAuctionActionPerformed
 

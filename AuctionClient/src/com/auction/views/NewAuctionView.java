@@ -5,6 +5,7 @@
  */
 package com.auction.views;
 
+import com.auction.exceptions.AuctionException;
 import com.auction.models.Auction;
 import com.auction.models.Bid;
 import com.auction.models.Product;
@@ -144,6 +145,10 @@ public class NewAuctionView extends javax.swing.JFrame {
             this.root.getFather().getServer().initializeAuction(this.root.getFather(), a);
         } catch (RemoteException ex) {
             Logger.getLogger(NewAuctionView.class.getName()).log(Level.SEVERE, null, ex);
+        }   catch (AuctionException ex) {
+		    String dialog_msg =	"Error in auction: \n" + 
+			    	    	ex.getAuction().toString() +
+			    		ex.getMessage();
         }
         this.dispose();
     }//GEN-LAST:event_btnConfirmActionPerformed

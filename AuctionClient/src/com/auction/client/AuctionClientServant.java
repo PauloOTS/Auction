@@ -5,6 +5,7 @@
  */
 package com.auction.client;
 
+import com.auction.exceptions.AuctionException;
 import com.auction.interfaces.AuctionClientInterface;
 import com.auction.interfaces.AuctionServerInterface;
 import com.auction.models.Auction;
@@ -13,6 +14,8 @@ import com.auction.models.User;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import com.auction.views.ClientView;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -55,7 +58,14 @@ public class AuctionClientServant extends UnicastRemoteObject implements Auction
                                       + "\n\nWinner Value: "+ 
                                       a.getHighest_bid().getValue());
         
-        this.view.setAuctions(this.server.listAuctions());
+	    try {
+		    this.view.setAuctions(this.server.listAuctions());
+	    } catch (AuctionException ex) {
+		    Logger.getLogger(AuctionClientServant.class.getName()).log(Level.SEVERE, null, ex);
+		    String dialog_msg =	"Error in auction: \n" + 
+			    	    	ex.getAuction().toString() +
+			    		ex.getMessage();
+	    }
     }
 
     @Override
@@ -64,7 +74,14 @@ public class AuctionClientServant extends UnicastRemoteObject implements Auction
                                       b.getAuction_id() + "\n\nUser is: " 
                                       + b.getUser()
                                       + "\n\nValue is: "+ b.getValue());
-        this.view.setAuctions(this.server.listAuctions());
+	    try {
+		    this.view.setAuctions(this.server.listAuctions());
+	    } catch (AuctionException ex) {
+		    Logger.getLogger(AuctionClientServant.class.getName()).log(Level.SEVERE, null, ex);
+		    String dialog_msg =	"Error in auction: \n" + 
+			    	    	ex.getAuction().toString() +
+			    		ex.getMessage();
+	    }
     }
 
     @Override

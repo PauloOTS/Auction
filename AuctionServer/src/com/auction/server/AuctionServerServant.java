@@ -7,6 +7,7 @@ package com.auction.server;
 
 import com.auction.control.AuctionDB;
 import com.auction.interfaces.AuctionClientInterface;
+import com.auction.exceptions.AuctionException;
 import java.rmi.server.UnicastRemoteObject;
 import com.auction.interfaces.AuctionServerInterface;
 import com.auction.models.Auction;
@@ -36,7 +37,8 @@ public class	AuctionServerServant
 
 	@Override
 	public ArrayList<Auction> listAuctions()
-	throws RemoteException
+	throws	RemoteException,
+		AuctionException
 	{
 		System.out.println("listAuctions");
 		return db.getAuctions();
@@ -44,23 +46,35 @@ public class	AuctionServerServant
 
 	@Override
 	public void initializeAuction(AuctionClientInterface c, Auction a)
-	throws RemoteException
+	throws	RemoteException,
+		AuctionException
 	{
 		System.out.println("initializeAuction");
+
+		if(a.getHighest_bid().getValue() <= 0.0){
+			throw new AuctionException(
+				"The initial value must be greater than zero!",
+				a);
+		}
+
 		db.inicializeAuction(c, a);
 	}
 
 	@Override
 	public synchronized void newBid(AuctionClientInterface c, Bid b)
-	throws RemoteException
+	throws	RemoteException,
+		AuctionException
 	{
 		System.out.println("newBid");
-		// if ...
 		db.newBid(c, b);
+
+		c.auctionBidNotification(b);
 	}
 
 	@Override
 	public void finishAuction(Auction a)
+	throws	RemoteException,
+		AuctionException
 	{
 		System.out.println("finishAuction");
 		ArrayList<AuctionClientInterface> l = db.finishAuction(a);

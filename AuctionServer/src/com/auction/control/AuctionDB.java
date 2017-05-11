@@ -6,10 +6,13 @@
 package com.auction.control;
 
 import com.auction.interfaces.AuctionClientInterface;
+import com.auction.exceptions.AuctionException;
 import com.auction.models.Auction;
 import com.auction.models.Bid;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -59,7 +62,8 @@ public class AuctionDB {
 		s.add(c);
 	}
 
-	public void inicializeAuction(AuctionClientInterface c, Auction a) throws RemoteException
+	public void inicializeAuction(AuctionClientInterface c, Auction a)
+		throws RemoteException
 	{
 		a.setId(auc_id.get());
 		auc_by_id.put(auc_id.get(), a);
@@ -67,6 +71,7 @@ public class AuctionDB {
                 
                 if (a.getAuctioneer().getId() == -1){
                     c.setID(client_id.get());
+		    a.getAuctioneer().setId(client_id.get());
                     client_id.addAndGet(1);
                 }
                 
@@ -79,34 +84,54 @@ public class AuctionDB {
 	 *
 	 * @param c Reference to the client
 	 * @param b The new bid
-	 * @return true if the new bid is the new highest bid
-	 * and false otherwise
+	 * 
+	 * @throws java.rmi.RemoteException
+	 * @throws com.auction.exceptions.AuctionException
 	 */
-	public boolean newBid(AuctionClientInterface c, Bid b) throws RemoteException
+	public void newBid(AuctionClientInterface c, Bid b)
+		throws	RemoteException,
+			AuctionException
 	{
 		Auction a = auc_by_id.get(b.getAuction_id());
 		Bid highest = a.getHighest_bid();
 
                 if (b.getUser().getId() == -1){
                     c.setID(client_id.get());
+		    b.getUser().setId(client_id.get());
                     client_id.addAndGet(1);
                 }
                 
-		if(b.getValue() <= highest.getValue() || 
-                  b.getUser().getId() == a.getAuctioneer().getId())
-			return false;
+		System.out.println("bid user id: " + b.getUser().getId());
+		System.out.println("auctioneer: " + a.getAuctioneer().getId());
+		if(b.getValue() <= highest.getValue()){
+			throw new AuctionException(
+				"The value of bid must be greater than the " +
+				"current highest bid.",
+				a);
+		}else if(b.getUser().getId() == a.getAuctioneer().getId()){
+			throw new AuctionException(
+				"The auctioneer and the bid owner must be " +
+				"diferent users!",
+				a
+			);
+		}
 
 		a.setHighest_bid(b);
 		addSubscriber(c, a);
-		return true;
+
 	}
 
 	public ArrayList<AuctionClientInterface> finishAuction(Auction a)
+		throws AuctionException
 	{
 		ArrayList<AuctionClientInterface> l = subscribers.get(a);
 
 		if(l != null)
 			subscribers.remove(a);
+		else
+			throw new AuctionException(
+				"The auction doest not exists or " +
+				"it's already over!", a);
 
 		return l;
 	}
