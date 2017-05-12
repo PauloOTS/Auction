@@ -14,6 +14,7 @@ import com.auction.models.Auction;
 import com.auction.models.Bid;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -59,6 +60,10 @@ public class	AuctionServerServant
 
 		db.inicializeAuction(c, a);
 
+		Timer t = new Timer();
+		t.schedule(	new AuctionTimeout(this, a),
+				a.getDuration_sec()*1000);
+
 	}
 
 	@Override
@@ -78,6 +83,24 @@ public class	AuctionServerServant
 		}
 	}
 
+	public void auctionTimeout(Auction a)
+	{
+		System.out.println("auctionTimeout");
+		ArrayList<AuctionClientInterface> l = db.auctionTimeout(a);
+
+		if(l != null){
+			try {
+				for(AuctionClientInterface c: l){
+					c.auctionClosedNotification(a);
+				}
+			} catch (RemoteException ex) {
+				Logger.getLogger(
+					AuctionServerServant.class.getName())
+					.log(Level.SEVERE, null, ex);
+			}
+		}
+	}
+
 	@Override
 	public void finishAuction(Auction a)
 	throws	RemoteException,
@@ -88,7 +111,7 @@ public class	AuctionServerServant
 
 		try {
 			for(AuctionClientInterface c: l){
-				c.auctionBidNotification(a.getHighest_bid());
+				c.auctionClosedNotification(a);
 			}
 		} catch (RemoteException ex) {
 			Logger.getLogger(

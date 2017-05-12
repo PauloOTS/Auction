@@ -11,8 +11,6 @@ import com.auction.models.Auction;
 import com.auction.models.Bid;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -131,6 +129,18 @@ public class AuctionDB {
 		return subscribers.get(a);
 	}
 
+	public ArrayList<AuctionClientInterface> auctionTimeout(Auction a)
+	{
+		ArrayList<AuctionClientInterface> l = subscribers.get(a);
+
+		if(l != null){
+			subscribers.remove(a);
+			auctions.remove(a);
+		}
+
+		return l;
+	}
+
 	public ArrayList<AuctionClientInterface> finishAuction(Auction a)
 		throws AuctionException
 	{
@@ -138,6 +148,7 @@ public class AuctionDB {
 
 		if(l != null){
 			subscribers.remove(a);
+			auctions.remove(a);
 		}else{
 			throw new AuctionException(
 				"The auction doest not exists or " +
