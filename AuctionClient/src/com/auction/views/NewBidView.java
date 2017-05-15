@@ -5,12 +5,9 @@
  */
 package com.auction.views;
 
-import com.auction.exceptions.AuctionException;
 import com.auction.models.Bid;
 import java.rmi.RemoteException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JTextField;
+
 
 /**
  *
@@ -131,13 +128,8 @@ public class NewBidView extends javax.swing.JFrame {
         try {
             this.root.getFather().getServer().newBid(this.root.getFather(), b);
         } catch (RemoteException ex) {
-            Logger.getLogger(NewBidView.class.getName()).log(Level.SEVERE, null, ex);
-        }   catch (AuctionException ex) {
-	    String dialog_msg =	"Error in auction: \n" + 
-				ex.getAuction().toString() +
-				ex.getMessage();
+            this.root.getFather().errorNotification(ex);
         }
-        
         this.dispose();
     }//GEN-LAST:event_btnConfirmActionPerformed
 

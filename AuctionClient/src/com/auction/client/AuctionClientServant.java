@@ -83,6 +83,7 @@ public class AuctionClientServant extends UnicastRemoteObject implements Auction
                                       + b.getUser().getName()
                                       + "\n\nValue is: "+ b.getValue());
         });
+
         t.start();
         
 	    try {
@@ -98,14 +99,29 @@ public class AuctionClientServant extends UnicastRemoteObject implements Auction
 	    }
     }
 
-    @Override
-    public void errorNotification(String error) throws RemoteException {
+    /**
+     *
+     * @param error
+     */
+    public void errorNotification(String error){
         
         Thread t = new Thread(() -> {
-            JOptionPane.showMessageDialog(this.getView(), "Error: " + error);    
+            JOptionPane.showMessageDialog(null, "Error: " + error);    
         });
         t.start();
             
+    }
+    
+    public void errorNotification(RemoteException ex){
+        if(ex != null && ex.getCause() != null
+               && ex.getMessage().contains("Auction")){
+                
+                AuctionException e = (AuctionException) ex.getCause();
+                String dialog_msg =     "Error in auction: \n" + 
+                    e.getAuction().toString() +
+                    e.getMessage();
+                this.errorNotification(dialog_msg);
+            }
     }
 
     @Override

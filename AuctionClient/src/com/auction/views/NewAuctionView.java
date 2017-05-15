@@ -144,12 +144,9 @@ public class NewAuctionView extends javax.swing.JFrame {
         try {
             this.root.getFather().getServer().initializeAuction(this.root.getFather(), a);
             this.root.setAuctions(this.root.getFather().getServer().listAuctions());
-        } catch (RemoteException ex) {
-            Logger.getLogger(NewAuctionView.class.getName()).log(Level.SEVERE, null, ex);
-        }   catch (AuctionException ex) {
-		    String dialog_msg =	"Error in auction: \n" + 
-			    	    	ex.getAuction().toString() +
-			    		ex.getMessage();
+        
+        }catch (RemoteException ex) {
+            this.root.getFather().errorNotification(ex);
         }
         this.dispose();
     }//GEN-LAST:event_btnConfirmActionPerformed
