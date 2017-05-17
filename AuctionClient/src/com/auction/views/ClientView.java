@@ -19,7 +19,7 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author abacate
+ * @author Paulo
  */
 public class ClientView extends javax.swing.JFrame {
 
@@ -278,6 +278,7 @@ public class ClientView extends javax.swing.JFrame {
             this.father.errorNotification(ex);
         }
 
+        //Verify if Aucttion exist
         Auction aux = null;
         for (Auction a: auctions) {
             if (a.getId() == id){
@@ -286,11 +287,13 @@ public class ClientView extends javax.swing.JFrame {
             }
         }
         
+        //If Auction doesn't exist
         if(aux == null){
             JOptionPane.showMessageDialog(null, "No matching auction found!");
             return;
         }
         
+        //If exists finish the auction
         try {
             this.father.getServer().finishAuction(this.father.getClientInfo().getId(), aux);
         } catch (RemoteException ex) {

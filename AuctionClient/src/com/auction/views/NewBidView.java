@@ -12,7 +12,7 @@ import java.rmi.RemoteException;
 
 /**
  *
- * @author abacate
+ * @author Paulo
  */
 public class NewBidView extends javax.swing.JFrame {
 
@@ -129,10 +129,13 @@ public class NewBidView extends javax.swing.JFrame {
 
     private void btnConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmActionPerformed
         // TODO add your handling code here:
+        
+        //Create new Bid to theAuction
         Bid b = new Bid(-1, Integer.parseInt(this.textAuctionID.getText()),
                 Double.parseDouble(this.textBid.getText()),
                 this.root.getFather().getClientInfo());
         
+        //Request a new bid to the server
         try {
             this.root.getFather().getServer().newBid(this.root.getFather(), b);
         } catch (RemoteException ex) {

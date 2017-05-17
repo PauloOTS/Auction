@@ -14,7 +14,7 @@ import java.rmi.RemoteException;
 
 /**
  *
- * @author abacate
+ * @author Paulo
  */
 public class NewAuctionView extends javax.swing.JFrame {
 
@@ -145,8 +145,12 @@ public class NewAuctionView extends javax.swing.JFrame {
         // TODO add your handling code here:
         User u = this.root.getFather().getClientInfo();
         Product p = new Product(-1, this.textItem.getText());
+        //Create new Default bid without any winner
         Bid b = new Bid(-1, -1, Double.parseDouble(this.textMinimum.getText()), null);
+        //Create new Auction without ID
         Auction a = new Auction(-1, u, p, b, Integer.parseInt(this.textTime.getText()));
+        
+        //Initialize the auction and update the list of auctions
         try {
             this.root.getFather().getServer().initializeAuction(this.root.getFather(), a);
             this.root.setAuctions(this.root.getFather().getServer().listAuctions());
