@@ -153,7 +153,7 @@ public class AuctionDB {
 	 * Removes the Auction from the list of auctions available
 	 * @param a 
 	 */
-        private synchronized void removeAuction(Auction a)
+        private void removeAuction(Auction a)
         {
             Iterator<Auction> it = auctions.iterator();
 	    synchronized(this){
