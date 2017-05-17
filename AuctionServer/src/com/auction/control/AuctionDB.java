@@ -11,6 +11,7 @@ import com.auction.models.Auction;
 import com.auction.models.Bid;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -129,26 +130,43 @@ public class AuctionDB {
 		return subscribers.get(a);
 	}
 
+        private synchronized void removeAuction(Auction a)
+        {
+            Iterator<Auction> it= auctions.iterator();
+            while (it.hasNext()) {
+                if (it.next().getId() == a.getId()){
+                   it.remove();
+                   break;
+                }
+            }
+        }
+        
+
 	public ArrayList<AuctionClientInterface> auctionTimeout(Auction a)
 	{
 		ArrayList<AuctionClientInterface> l = subscribers.get(a);
 
 		if(l != null){
 			subscribers.remove(a);
-			auctions.remove(a);
+			removeAuction(a);
 		}
 
 		return l;
 	}
 
-	public ArrayList<AuctionClientInterface> finishAuction(Auction a)
+	public ArrayList<AuctionClientInterface> finishAuction(int id, Auction a)
 		throws AuctionException
 	{
+            
+                if (id != a.getAuctioneer().getId()){
+                    throw new AuctionException("You don't have prmission to close Auction", a);
+                }
+                
 		ArrayList<AuctionClientInterface> l = subscribers.get(a);
 
 		if(l != null){
 			subscribers.remove(a);
-			auctions.remove(a);
+			removeAuction(a);
 		}else{
 			throw new AuctionException(
 				"The auction doest not exists or " +

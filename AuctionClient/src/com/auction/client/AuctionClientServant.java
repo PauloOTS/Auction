@@ -24,11 +24,80 @@ import javax.swing.JOptionPane;
  */
 public class AuctionClientServant extends UnicastRemoteObject implements AuctionClientInterface{
 
+    // View of the client
     final private ClientView view;
+    // Reference to the server
     final private AuctionServerInterface server;
+    // Information about the client
     private User clientInfo;
 
-    public User getClientInfo() {
+   
+    /**
+     * @brief AuctionClient Servant Constructor
+     * @param server reference to server
+     * @throws RemoteException 
+     */
+    AuctionClientServant(AuctionServerInterface server) throws RemoteException{
+        this.server = server;
+        this.view = new ClientView(this);
+        this.view.setVisible(true);
+    }
+    
+    /**
+     * @brief AuctionClosedNotification implemented
+     * @param a Auction that finished
+     * @throws RemoteException 
+     */
+    @Override
+    public void auctionClosedNotification(Auction a) throws RemoteException {
+
+        Thread t = new Thread(() -> {
+            if (a.getHighest_bid().getUser() == null)
+                JOptionPane.showMessageDialog(this.view, "Auction " +
+                    a.getId() + " closed.\n\nThere were no bids for this auction");
+            else
+                JOptionPane.showMessageDialog(this.view, "Auction " +
+                    a.getId() + " closed.\n\nWinner is: " +
+                    a.getHighest_bid().getUser().getName()
+                    + "\n\nWinner Value: "+
+                    a.getHighest_bid().getValue());
+        });
+
+        t.start();
+        
+	try {
+		this.view.setAuctions(this.server.listAuctions());
+	} catch (RemoteException ex) {
+                this.errorNotification(ex);
+	}
+    }
+
+     /**
+     * @brief AuctionBidNotification implemented
+     * @param b New Bid
+     * @throws RemoteException 
+     */
+    @Override
+    public void auctionBidNotification(Bid b) throws RemoteException {
+        
+        Thread t = new Thread(() -> {
+            JOptionPane.showMessageDialog(this.view, "New bid at Auction " + 
+                                      b.getAuction_id() + "\n\nUser is: " 
+                                      + b.getUser().getName()
+                                      + "\n\nValue is: "+ b.getValue());
+        });
+
+        t.start();
+        
+	    try {
+		    this.view.setAuctions(this.server.listAuctions());
+	    } catch (RemoteException ex) {       
+                    this.errorNotification(ex);    
+
+	    }
+    }
+    
+     public User getClientInfo() {
         return clientInfo;
     }
 
@@ -44,63 +113,8 @@ public class AuctionClientServant extends UnicastRemoteObject implements Auction
         return server;
     }
 
-    AuctionClientServant(AuctionServerInterface server) throws RemoteException{
-        this.server = server;
-        this.view = new ClientView(this);
-        this.view.setVisible(true);
-    }
-    
-    @Override
-    public void auctionClosedNotification(Auction a) throws RemoteException {
-
-        Thread t = new Thread(() -> {
-            JOptionPane.showMessageDialog(null, "Auction " +
-                    a.getId() + "closed.\n\nWinner is: " +
-                    a.getHighest_bid().getUser().getName()
-                    + "\n\nWinner Value: "+
-                    a.getHighest_bid().getValue());
-        });
-
-        t.start();
-
-        
-	    try {
-		    this.view.setAuctions(this.server.listAuctions());
-	    } catch (AuctionException ex) {
-		    Logger.getLogger(AuctionClientServant.class.getName()).log(Level.SEVERE, null, ex);
-		    String dialog_msg =	"Error in auction: \n" + 
-			    	    	ex.getAuction().toString() +
-			    		ex.getMessage();
-	    }
-    }
-
-    @Override
-    public void auctionBidNotification(Bid b) throws RemoteException {
-        
-        Thread t = new Thread(() -> {
-            JOptionPane.showMessageDialog(this.getView(), "New bid at Auction " + 
-                                      b.getAuction_id() + "\n\nUser is: " 
-                                      + b.getUser().getName()
-                                      + "\n\nValue is: "+ b.getValue());
-        });
-
-        t.start();
-        
-	    try {
-		    this.view.setAuctions(this.server.listAuctions());
-	    } catch (AuctionException ex) {
-                    System.out.println("asidfohsaifhadosifuhdsifu\n\n");
-		    Logger.getLogger(AuctionClientServant.class.getName()).log(Level.SEVERE, null, ex);
-		    String dialog_msg =	"Error in auction: \n" + 
-			    	    	ex.getAuction().toString() +
-			    		ex.getMessage();
-                    this.errorNotification(dialog_msg);    
-
-	    }
-    }
-
     /**
-     *
+     * @brief Function To show an error String message
      * @param error
      */
     public void errorNotification(String error){
@@ -112,6 +126,10 @@ public class AuctionClientServant extends UnicastRemoteObject implements Auction
             
     }
     
+    /**
+     * @brief Function that shows an error based on a RemoteException / AuctionException
+     * @param ex exception to be notified 
+     */
     public void errorNotification(RemoteException ex){
         if(ex != null && ex.getCause() != null
                && ex.getMessage().contains("Auction")){
@@ -124,6 +142,11 @@ public class AuctionClientServant extends UnicastRemoteObject implements Auction
             }
     }
 
+     /**
+     * @brief AuctionClient setID implemented
+     * @param id UserID
+     * @throws RemoteException 
+     */
     @Override
     public void setID(int id) throws RemoteException {
         this.clientInfo.setId(id);

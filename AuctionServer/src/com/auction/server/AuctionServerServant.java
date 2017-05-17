@@ -93,7 +93,7 @@ public class	AuctionServerServant
 				for(AuctionClientInterface c: l){
 					c.auctionClosedNotification(a);
 				}
-			} catch (RemoteException ex) {
+			} catch (RemoteException ex) { 
 				Logger.getLogger(
 					AuctionServerServant.class.getName())
 					.log(Level.SEVERE, null, ex);
@@ -102,12 +102,12 @@ public class	AuctionServerServant
 	}
 
 	@Override
-	public void finishAuction(Auction a)
+	public void finishAuction(int id, Auction a)
 	throws	RemoteException,
 		AuctionException
 	{
 		System.out.println("finishAuction");
-		ArrayList<AuctionClientInterface> l = db.finishAuction(a);
+		ArrayList<AuctionClientInterface> l = db.finishAuction(id, a);
 
 		try {
 			for(AuctionClientInterface c: l){

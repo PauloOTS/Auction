@@ -6,14 +6,11 @@
 package com.auction.views;
 
 import com.auction.client.AuctionClientServant;
-import com.auction.exceptions.AuctionException;
 import com.auction.models.Auction;
 import com.auction.models.User;
 import java.awt.Point;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -26,39 +23,10 @@ import javax.swing.table.DefaultTableModel;
  */
 public class ClientView extends javax.swing.JFrame {
 
-     /**
-     * @param args the command line arguments
-     */
+   
     
     private ArrayList<Auction> auctions;
-
-    public ArrayList<Auction> getAuctions() {
-        return auctions;
-    }
-
-    public void setAuctions(ArrayList<Auction> auctions) {
-        this.auctions = auctions;
-        this.atualizeTable(this.auctions);
-    }
-
-    public ArrayList<Auction> getMyAuctions() {
-        return myAuctions;
-    }
-
-    public void setMyAuctions(ArrayList<Auction> myAuctions) {
-        this.myAuctions = myAuctions;
-    }
-    private ArrayList<Auction> myAuctions;
     private AuctionClientServant father;
-
-    public AuctionClientServant getFather() {
-        return father;
-    }
-
-    public void setFather(AuctionClientServant father) {
-        this.father = father;
-    }
-    
     /**
      * Creates new form ClientView
      * @param f
@@ -69,7 +37,8 @@ public class ClientView extends javax.swing.JFrame {
         
         this.father = f;
         initComponents();
-        
+     
+        // Initialize name of the client
         String name = "";
         while("".equals(name)){
             name = JOptionPane.showInputDialog("What's your name?");
@@ -80,22 +49,28 @@ public class ClientView extends javax.swing.JFrame {
             }
         }
         
+        // Set Servant User Information
         this.father.setClientInfo(new User(-1, name));
         
-	    try {
-		    auctions = this.father.getServer().listAuctions();
-	    } catch (RemoteException ex) {
-		    this.father.errorNotification(ex);
-	    }
+        // Get all the active Auctions
+	try {
+		auctions = this.father.getServer().listAuctions();
+	} catch (RemoteException ex) {
+		this.father.errorNotification(ex);
+	}
         this.atualizeTable(auctions);
         
         this.lblUsername.setText("Welcome " + name + " !");
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment( JLabel.CENTER );
         tableAuctions.setDefaultRenderer(Object.class , centerRenderer);
- 
+
     }
     
+    /**
+     * Auctualize table base on a list of auctions
+     * @param auctions List of all auction in server
+     */
     private void atualizeTable(ArrayList<Auction> auctions){
         DefaultTableModel model = (DefaultTableModel) this.tableAuctions.getModel();
         model.setNumRows(0);
@@ -115,6 +90,23 @@ public class ClientView extends javax.swing.JFrame {
         
         System.out.println(model);
         this.tableAuctions.setModel(model);
+    }
+    
+        public ArrayList<Auction> getAuctions() {
+        return auctions;
+    }
+
+    public void setAuctions(ArrayList<Auction> auctions) {
+        this.auctions = auctions;
+        this.atualizeTable(this.auctions);
+    }
+
+    public AuctionClientServant getFather() {
+        return father;
+    }
+
+    public void setFather(AuctionClientServant father) {
+        this.father = father;
     }
     
     /**
@@ -286,7 +278,7 @@ public class ClientView extends javax.swing.JFrame {
         }
         
         try {
-            this.father.getServer().finishAuction(aux);
+            this.father.getServer().finishAuction(this.father.getClientInfo().getId(), aux);
         } catch (RemoteException ex) {
             this.father.errorNotification(ex);
         }

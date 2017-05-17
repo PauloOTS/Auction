@@ -22,7 +22,7 @@ public interface AuctionServerInterface extends Remote{
 		throws	RemoteException,
 			AuctionException;
 
-	void finishAuction(Auction a)
+	void finishAuction(int id, Auction a)
 		throws	RemoteException,
 			AuctionException;
 }

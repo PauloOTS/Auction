@@ -5,14 +5,11 @@
  */
 package com.auction.views;
 
-import com.auction.exceptions.AuctionException;
 import com.auction.models.Auction;
 import com.auction.models.Bid;
 import com.auction.models.Product;
 import com.auction.models.User;
 import java.rmi.RemoteException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
