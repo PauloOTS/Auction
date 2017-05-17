@@ -14,8 +14,6 @@ import com.auction.models.User;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import com.auction.views.ClientView;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -57,7 +55,9 @@ public class AuctionClientServant extends UnicastRemoteObject implements Auction
                     a.getId() + " closed.\n\nThere were no bids for this auction");
             else
                 JOptionPane.showMessageDialog(this.view, "Auction " +
-                    a.getId() + " closed.\n\nWinner is: " +
+                    a.getId() + " closed.\n\n" +
+		    "Product: " + a.getProduct().getDesc() + "\n\n" +
+		    "Winner is: " +
                     a.getHighest_bid().getUser().getName()
                     + "\n\nWinner Value: "+
                     a.getHighest_bid().getValue());
@@ -120,7 +120,7 @@ public class AuctionClientServant extends UnicastRemoteObject implements Auction
     public void errorNotification(String error){
         
         Thread t = new Thread(() -> {
-            JOptionPane.showMessageDialog(null, "Error: " + error);    
+            JOptionPane.showMessageDialog(this.view, "Error: " + error);    
         });
         t.start();
             
@@ -136,7 +136,7 @@ public class AuctionClientServant extends UnicastRemoteObject implements Auction
                 
                 AuctionException e = (AuctionException) ex.getCause();
                 String dialog_msg =     "Error in auction: \n" + 
-                    e.getAuction().toString() +
+                    ((e.getAuction() == null)?"\n":e.getAuction().toString()) +
                     e.getMessage();
                 this.errorNotification(dialog_msg);
             }

@@ -9,6 +9,7 @@ import com.auction.models.Auction;
 import com.auction.models.Bid;
 import com.auction.models.Product;
 import com.auction.models.User;
+import java.awt.Point;
 import java.rmi.RemoteException;
 
 /**
@@ -21,11 +22,19 @@ public class NewAuctionView extends javax.swing.JFrame {
      * Creates new form newAuctionView
      */
     
-    private ClientView root;
+    final private ClientView root;
     public NewAuctionView(ClientView root) {
+	super("New Auction");
         this.root = root;
         initComponents();
         this.setVisible(true);
+
+	Point p = this.root.getLocation();
+	int pw = this.root.getWidth()/2;
+	int ph = this.root.getHeight()/2;
+	Point tmp = new Point(	p.x + pw - this.getWidth()/2,
+				p.y + ph - this.getHeight()/2);
+	this.setLocation(tmp);
     }
 
     /**

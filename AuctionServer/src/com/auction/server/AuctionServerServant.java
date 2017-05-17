@@ -72,6 +72,7 @@ public class	AuctionServerServant
 		AuctionException
 	{
 		System.out.println("newBid");
+
 		db.newBid(c, b);
 
 		ArrayList<AuctionClientInterface> l = db.getSubscribers(

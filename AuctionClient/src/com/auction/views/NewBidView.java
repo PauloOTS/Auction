@@ -6,6 +6,7 @@
 package com.auction.views;
 
 import com.auction.models.Bid;
+import java.awt.Point;
 import java.rmi.RemoteException;
 
 
@@ -21,9 +22,16 @@ public class NewBidView extends javax.swing.JFrame {
     
     ClientView root;
     public NewBidView(ClientView root) {
+	super("New Bid");
         this.root = root;
         initComponents();
         this.setVisible(true);
+	Point p = this.root.getLocation();
+	int pw = this.root.getWidth()/2;
+	int ph = this.root.getHeight()/2;
+	Point tmp = new Point(	p.x + pw - this.getWidth()/2,
+				p.y + ph - this.getHeight()/2);
+	this.setLocation(tmp);
     }
 
     /**

@@ -91,33 +91,42 @@ public class AuctionDB {
 		throws	RemoteException,
 			AuctionException
 	{
-		Auction a = auc_by_id.get(b.getAuction_id());
-		Bid highest = a.getHighest_bid();
+		synchronized(this){
+			Auction a = auc_by_id.get(b.getAuction_id());
 
-                if (b.getUser().getId() == -1){
-                    c.setID(client_id.get());
-		    b.getUser().setId(client_id.get());
-                    client_id.addAndGet(1);
-                }
-                
-		System.out.println("bid user id: " + b.getUser().getId());
-		System.out.println("auctioneer: " + a.getAuctioneer().getId());
-		if(b.getValue() <= highest.getValue()){
-			throw new AuctionException(
-				"The value of bid must be greater than the " +
-				"current highest bid.",
-				a);
-		}else if(b.getUser().getId() == a.getAuctioneer().getId()){
-			throw new AuctionException(
-				"The auctioneer and the bid owner must be " +
-				"diferent users!",
-				a
-			);
+			if(a == null){
+				throw new AuctionException(
+					"Auction finished or does not exist",
+					null);
+			}
+
+			Bid highest = a.getHighest_bid();
+
+			if (b.getUser().getId() == -1){
+			    c.setID(client_id.get());
+			    b.getUser().setId(client_id.get());
+			    client_id.addAndGet(1);
+			}
+			
+			System.out.println("bid user id: " + b.getUser().getId());
+			System.out.println("auctioneer: " + a.getAuctioneer().getId());
+			if(b.getValue() <= highest.getValue()){
+				throw new AuctionException(
+					"The value of bid must be greater than the " +
+					"current highest bid.",
+					a);
+			}else if(b.getUser().getId() == a.getAuctioneer().getId()){
+				throw new AuctionException(
+					"The auctioneer and the bid owner must be " +
+					"diferent users!",
+					a
+				);
+			}
+
+			a.setHighest_bid(b);
+			addSubscriber(c, a);
+
 		}
-
-		a.setHighest_bid(b);
-		addSubscriber(c, a);
-
 	}
 
 	public Auction getAuction(int id)
@@ -132,13 +141,16 @@ public class AuctionDB {
 
         private synchronized void removeAuction(Auction a)
         {
-            Iterator<Auction> it= auctions.iterator();
-            while (it.hasNext()) {
-                if (it.next().getId() == a.getId()){
-                   it.remove();
-                   break;
-                }
-            }
+            Iterator<Auction> it = auctions.iterator();
+	    synchronized(this){
+		    auc_by_id.remove(a.getId());
+		    while (it.hasNext()) {
+			if (it.next().getId() == a.getId()){
+			   it.remove();
+			   break;
+			}
+		    }
+	    }
         }
         
 
