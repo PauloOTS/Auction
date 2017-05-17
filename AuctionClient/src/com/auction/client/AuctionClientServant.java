@@ -18,7 +18,7 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author abacate
+ * @author Paulo
  */
 public class AuctionClientServant extends UnicastRemoteObject implements AuctionClientInterface{
 
@@ -49,6 +49,7 @@ public class AuctionClientServant extends UnicastRemoteObject implements Auction
     @Override
     public void auctionClosedNotification(Auction a) throws RemoteException {
 
+        // New dialog to notify the client
         Thread t = new Thread(() -> {
             if (a.getHighest_bid().getUser() == null)
                 JOptionPane.showMessageDialog(this.view, "Auction " +
@@ -65,6 +66,7 @@ public class AuctionClientServant extends UnicastRemoteObject implements Auction
 
         t.start();
         
+        // Request the list of auctions again
 	try {
 		this.view.setAuctions(this.server.listAuctions());
 	} catch (RemoteException ex) {
@@ -80,6 +82,7 @@ public class AuctionClientServant extends UnicastRemoteObject implements Auction
     @Override
     public void auctionBidNotification(Bid b) throws RemoteException {
         
+        //Dialog to notify the user
         Thread t = new Thread(() -> {
             JOptionPane.showMessageDialog(this.view, "New bid at Auction " + 
                                       b.getAuction_id() + "\n\nUser is: " 
@@ -89,6 +92,7 @@ public class AuctionClientServant extends UnicastRemoteObject implements Auction
 
         t.start();
         
+        //Request the list of auctions again
 	    try {
 		    this.view.setAuctions(this.server.listAuctions());
 	    } catch (RemoteException ex) {       
