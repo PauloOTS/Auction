@@ -49,6 +49,9 @@ public class AuctionDB {
 		return auctions;
 	}
 
+	/**
+	  * adds a subscriber `c` to an Auction `a`
+	  */
 	private void addSubscriber(AuctionClientInterface c, Auction a)
 	{
 		ArrayList<AuctionClientInterface> s = subscribers.get(a);
@@ -61,6 +64,13 @@ public class AuctionDB {
 		s.add(c);
 	}
 
+	/** Inicialize an Auction `a` and subscribe the client `c` in 
+	 * in the auction
+	 *
+	 * @param c reference to the client
+	 * @param a the Auction made by `c`
+	 * @throws java.rmi.RemoteException
+	  */
 	public void inicializeAuction(AuctionClientInterface c, Auction a)
 		throws RemoteException
 	{
@@ -139,6 +149,10 @@ public class AuctionDB {
 		return subscribers.get(a);
 	}
 
+	/**
+	 * Removes the Auction from the list of auctions available
+	 * @param a 
+	 */
         private synchronized void removeAuction(Auction a)
         {
             Iterator<Auction> it = auctions.iterator();
@@ -154,6 +168,12 @@ public class AuctionDB {
         }
         
 
+	/** When timeout removes `a` from the list if the `a` whas not
+	 * finished.
+	 * 
+	 * @param a
+	 * @return 
+	 */
 	public ArrayList<AuctionClientInterface> auctionTimeout(Auction a)
 	{
 		ArrayList<AuctionClientInterface> l = subscribers.get(a);
@@ -166,12 +186,21 @@ public class AuctionDB {
 		return l;
 	}
 
+	/**
+	 * Finishes the Auction `a` and check if the client that made the auction
+	 * `a` is equal to the client who send the finishAuction request.
+	 * @param id ID from the client
+	 * @param a
+	 * @return A list to the client references who subscribe to this auction
+	 * @throws AuctionException 
+	 */
 	public ArrayList<AuctionClientInterface> finishAuction(int id, Auction a)
 		throws AuctionException
 	{
             
                 if (id != a.getAuctioneer().getId()){
-                    throw new AuctionException("You don't have prmission to close Auction", a);
+                    throw new AuctionException(
+			    "You don't have prmission to close Auction", a);
                 }
                 
 		ArrayList<AuctionClientInterface> l = subscribers.get(a);

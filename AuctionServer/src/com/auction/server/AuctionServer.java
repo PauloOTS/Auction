@@ -13,7 +13,8 @@ import java.rmi.registry.Registry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
+/** The AuctionServer class will create a registry reference and bind to the
+ * AuctionServerInterface.REFERENCE_NAME.
  *
  * @author yudi
  */

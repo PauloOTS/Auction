@@ -18,7 +18,7 @@ import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
+/** Implementation of the interface AuctionServerInterface.
  *
  * @author yudi
  */
@@ -36,6 +36,13 @@ public class	AuctionServerServant
 		db = new AuctionDB();
 	}
 
+	/**
+	 * List the auctions and set a timer to the timer of the Auction choosed
+	 * by the client
+	 * @return A list of auctions avaible in the server
+	 * @throws RemoteException
+	 * @throws AuctionException 
+	 */
 	@Override
 	public ArrayList<Auction> listAuctions()
 	throws	RemoteException,
@@ -45,6 +52,13 @@ public class	AuctionServerServant
 		return db.getAuctions();
 	}
 
+	/**
+	 * Inicialize the auction `a` with `c` as owner
+	 * @param c
+	 * @param a
+	 * @throws RemoteException
+	 * @throws AuctionException 
+	 */
 	@Override
 	public void initializeAuction(AuctionClientInterface c, Auction a)
 	throws	RemoteException,
@@ -66,6 +80,13 @@ public class	AuctionServerServant
 
 	}
 
+	/** Creates a new bind and notify all the subscribed clients to the `b`.
+	 * 
+	 * @param c
+	 * @param b
+	 * @throws RemoteException
+	 * @throws AuctionException 
+	 */
 	@Override
 	public synchronized void newBid(AuctionClientInterface c, Bid b)
 	throws	RemoteException,
@@ -84,6 +105,11 @@ public class	AuctionServerServant
 		}
 	}
 
+	/**
+	 * Finish the time of the auction `a` and notify all
+	 * the subscribed clients to the `b`.
+	 * @param a 
+	 */
 	public void auctionTimeout(Auction a)
 	{
 		System.out.println("auctionTimeout");
@@ -102,6 +128,14 @@ public class	AuctionServerServant
 		}
 	}
 
+	/**
+	 * Finishes the Auction and notify all the
+	 * subscribed clients to the `b`.
+	 * @param id
+	 * @param a
+	 * @throws RemoteException
+	 * @throws AuctionException 
+	 */
 	@Override
 	public void finishAuction(int id, Auction a)
 	throws	RemoteException,
